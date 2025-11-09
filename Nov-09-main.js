@@ -149,3 +149,44 @@ const generaterObject=myGenerator();
 for(const value of generaterObject){
     console.log(value); //Output: 1 2 3
 }
+
+// Real practical example of currying: A logging utility
+
+const log = level => component => message => {
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] [${level.toUpperCase()}] [${component}]: ${message}`);
+};
+
+// Reusable curried loggers
+const infoLog = log('info');
+const errorLog = log('error');
+const warnLog = log('warn');
+
+// In a component or service
+const userServiceLog = infoLog('UserService');
+const paymentServiceLog = errorLog('PaymentService');
+
+// Usage
+userServiceLog('User created successfully');
+paymentServiceLog('Transaction failed due to insufficient balance');
+
+
+//Validation utility using currying
+
+const minLength = min => value =>
+  value.length >= min ? null : `Must be at least ${min} characters`;
+
+const maxLength = max => value =>
+  value.length <= max ? null : `Must be less than ${max} characters`;
+
+const isEmail = value =>
+  /\S+@\S+\.\S+/.test(value) ? null : 'Invalid email';
+
+// Compose validators
+const validateUsername = value => minLength(3)(value) || maxLength(10)(value);
+const validateEmail = value => isEmail(value);
+
+// Example usage
+console.log(validateUsername('Jo'));     // "Must be at least 3 characters"
+console.log(validateUsername('Jonathan'));// null (valid)
+console.log(validateEmail('test@xyz.com'));// null
